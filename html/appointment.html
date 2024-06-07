@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Page</title>
+    <style>
+        nav.navbar {
+            background-color: #3498db;
+            overflow: hidden;
+        }
+
+            nav.navbar ul {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+                text-align: center;
+            }
+
+                nav.navbar ul li {
+                    display: inline;
+                }
+
+                    nav.navbar ul li a {
+                        display: inline-block;
+                        padding: 15px;
+                        text-decoration: none;
+                        color: #fff;
+                    }
+
+                        nav.navbar ul li a:hover {
+                            background-color: #2980b9;
+                        }
+        body {
+            background-color: #FFFFFF; 
+            color: #000000; 
+            font-family: Arial, sans-serif; 
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        label {
+            color: #3498db;
+        }
+
+        select, input[type="submit"] {
+            background-color: #3498db;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            select:hover, input[type="submit"]:hover {
+                background-color: #000099;
+            }
+
+        input[type="submit"] {
+            margin-top: 20px; 
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="MyCourses.html">My Courses</a></li>
+            <li><a href="appointment.html">Appointment</a></li>
+            <li><a href="profiledisplay.html">Profile</a></li>
+        </ul>
+    </nav>
+    <h1>Create Appointment</h1>
+    <form id="appointmentForm">
+        <label for="datetime">Select Date and Time:</label>
+        <select id="datetime" name="datetime">
+        </select>
+        <br><br>
+        <label for="cashier">Select Cashier Number:</label>
+        <select id="cashier" name="cashier">
+        </select>
+        <br><br>
+        <input type="submit" value="Schedule Appointment">
+    </form>
+    <script>
+        
+        fetch('/getAppointmentData')
+            .then(response => response.json())
+            .then(data => {
+                const datetimeSelect = document.getElementById('datetime');
+                const cashierSelect = document.getElementById('cashier');
+
+               
+
+                data.forEach(item => {
+                    const optionDatetime = document.createElement('option');
+                    const adjustedTime = new Date(item.dt); 
+
+                    
+                    const formattedTime = adjustedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const formattedDateTime = `${adjustedTime.toDateString()} ${formattedTime}`;
+                    optionDatetime.value = item.dt;
+                    optionDatetime.textContent = formattedDateTime;
+                    datetimeSelect.appendChild(optionDatetime);
+
+                    const optionCashier = document.createElement('option');
+                    optionCashier.value = item.CashierNB;
+                    optionCashier.textContent = item.CashierNB;
+                    cashierSelect.appendChild(optionCashier);
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+
+
+        document.getElementById('appointmentForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            fetch('/createAppointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formObject)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Appointment created successfully!');
+
+                    } else {
+                        throw new Error('Failed to create appointment.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating appointment:', error);
+                    alert('Failed to create appointment. Please try again.');
+                });
+        });
+    </script>
+</body>
+</html>

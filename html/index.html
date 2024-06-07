@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #loginForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            text-align: left;
+            margin-top: 10px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+            input:focus {
+                border-color: #0070c9;
+            }
+
+        button {
+            background-color: #0070c9;
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 15px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+            button:hover {
+                background-color: #005193;
+                transform: scale(1.05);
+            }
+
+        #result {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        #loading-icon {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loginForm > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        #signupLink,
+        #resetPassword {
+            text-decoration: none;
+            font-size: 14px;
+            color: #0070c9;
+            cursor: pointer;
+            transition: color 0.3s ease-in-out;
+        }
+
+            #signupLink:hover,
+            #resetPassword:hover {
+                color: #005193;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Login</h2>
+        <div id="loginForm">
+            <label for="name">Username:</label>
+            <input type="text" id="name" /><br />
+            <label for="pass">Password:</label>
+            <input type="password" id="pass"><br /><br />
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <a id="resetPassword">Forget Password</a>
+                <a id="signupLink">Sign Up</a>
+            </div>
+            <button id="signin">Sign In</button>
+            <p id="result"></p>
+        </div>
+    </div>
+    <div id="overlay">
+        <div id="loading-icon"></div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var input = document.getElementById('name');
+            var pass = document.getElementById('pass');
+            var getBtnPost = document.getElementById('signin');
+            var BaseUrlPost = "http://localhost:1337/infoPost/";
+            var forget = document.getElementById('resetPassword');
+            getBtnPost.addEventListener('click', postInfo);
+            var signUpBtn = document.getElementById('signupLink');
+            signUpBtn.addEventListener('click', redirectToSignUp);
+            forget.addEventListener('click', redirecttoforget);
+            async function postInfo(e) {
+                e.preventDefault();
+
+
+                document.getElementById('overlay').style.display = 'flex';
+
+                const res = await fetch(BaseUrlPost, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: input.value,
+                        passw: pass.value
+                    })
+                });
+
+                var data = await res.json();
+
+                document.getElementById("result").innerHTML = data.info;
+
+                setTimeout(function () {
+
+                    document.getElementById('overlay').style.display = 'none';
+
+                    if (data.info == 'you are successfully logged in') {
+
+                        window.location = "home.html";
+                    }
+
+                    else if (data.info == 'you are an admin') {
+                        window.location = "admin.html";
+                    }
+                }, 1500);
+            }
+        });
+
+        function redirectToSignUp() {
+
+            document.getElementById('overlay').style.display = 'flex';
+
+
+            setTimeout(function () {
+                window.location = "signnup.html";
+            }, 1500);
+        }
+        function redirecttoforget() {
+
+            document.getElementById('overlay').style.display = 'flex';
+
+
+            setTimeout(function () {
+                window.location = "forgetpass.html";
+            }, 1500);
+        }
+
+
+    </script>
+
+</body>
+
+</html>

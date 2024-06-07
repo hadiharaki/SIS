@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrolled Courses</title>
+    <style>
+
+        nav.navbar {
+            background-color: #3498db;
+            overflow: hidden;
+        }
+
+            nav.navbar ul {
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+                text-align: center;
+            }
+
+                nav.navbar ul li {
+                    display: inline;
+                }
+
+                    nav.navbar ul li a {
+                        display: inline-block;
+                        padding: 15px;
+                        text-decoration: none;
+                        color: #fff;
+                    }
+
+                        nav.navbar ul li a:hover {
+                            background-color: #2980b9;
+                        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .search-container {
+            position: relative;
+            width: fit-content;
+            margin: 20px auto;
+        }
+
+        .search-bar {
+            display: block;
+            width: 200px;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        #tablecontainer {
+            padding: 20px;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .table-header {
+            width: calc(100% + 60px);
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-left: -30px;
+        }
+
+        table {
+            width: calc(100% + 60px);
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-left: -30px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .rowBtn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+            .rowBtn:hover {
+                background-color: #2980b9;
+            }
+
+        #para {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+            #para h2 {
+                margin-bottom: 20px;
+                font-size: 28px;
+                color: #333;
+            }
+
+            #para p {
+                margin: 10px 0;
+                padding: 12px 18px;
+                background-color: #3498db;
+                border-radius: 5px;
+                font-size: 18px;
+                line-height: 1.6;
+                color: #444;
+                display: block;
+            }
+
+        .profile-link {
+            background: none;
+            border: none; /* Remove the border from the container */
+            padding: 0;
+            cursor: pointer;
+            outline: none;
+            position: absolute;
+            top: 5px;
+            right: 20px; /* Adjust the right position */
+        }
+
+            .profile-link img {
+                width: 40px; /* Adjust as needed */
+                height: 40px; /* Adjust as needed */
+                border-radius: 50%; /* For a circular image */
+                border: 2px solid white; /* Add a 2px solid white border around the image */
+                /* Add any other styling you want for the image */
+            }
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="MyCourses.html">My Courses</a></li>
+            <li><a href="appointment.html">Appointment</a></li>
+            <li><a href="profiledisplay.html">Profile</a></li>
+        </ul>
+        <button id="imgButton" class="profile-link">
+            <img src="" alt="Profile Photo" id="profileImg" width="40" height="50">
+        </button>
+    </nav>
+
+    <div class="search-container">
+        <input type="text" id="searchBar" class="search-bar">
+        <i class="fas fa-search search-icon" id="searchIcon"></i>
+    </div>
+
+    <div id="tablecontainer">
+
+        <table id="tablee" border="1">
+            <div class="table-header">COURSE OFFERING</div>
+
+        </table>
+
+    </div>
+
+
+
+    <div id="para">
+
+        <h2>Your Search</h2>
+    </div>
+
+
+
+    <script>
+        var dataArray = [];
+        var dataArray2 = [];
+        var dataArray5 = [];
+        var button;
+        var data3;
+        var data4;
+        var data5;
+        var rowIndex;
+        var button1;
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchdata();
+          
+        });
+
+        async function fetchdata() {
+            await postInfo();
+            await postInfo2();
+            
+            await displaytable();
+            postprofile();
+
+
+        }
+
+        var BaseUrlPost = "http://localhost:1337/infopo/";
+        async function postInfo() {
+
+
+            const res = await fetch(BaseUrlPost, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+
+                })
+            });
+
+            data = await res.json();
+
+            data.forEach(function (obj) {
+                var valuesArray = Object.values(obj);
+                dataArray.push(valuesArray);
+            });
+        }
+
+        var BaseUrlPost2 = "http://localhost:1337/infopo2/";
+        async function postInfo2() {
+
+
+            const res = await fetch(BaseUrlPost2, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+
+                })
+            });
+
+
+            data2 = await res.json();
+            data2.forEach(function (obj) {
+                var valuesArray = Object.values(obj);
+                dataArray2.push(valuesArray);
+            });
+        }
+
+        function displaytable() {
+            var tablecontainer = document.getElementById('tablecontainer');
+            var table = document.getElementById('tablee');
+
+
+            for (var i = 0; i < dataArray.length; i++) {
+                var found = 0;
+                var row = document.createElement('tr');
+
+
+                for (var j = 0; j < dataArray[i].length; j++) {
+                    var column = document.createElement('td');
+                    column.textContent = dataArray[i][j];
+                    row.appendChild(column);
+
+
+                }
+
+                for (var k = 0; k < dataArray2.length; k++) {
+
+                    if (dataArray[i][0] == dataArray2[k][0]) {
+                        var column2 = document.createElement('td');
+                        button = document.createElement('button');
+                        button.textContent = 'drop';
+                        button.classList.add('rowBtn');
+                        column2.appendChild(button);
+                        row.appendChild(column2);
+                        found = 1;
+                    }
+
+                }
+                if (found == 0) {
+                    var column3 = document.createElement('td');
+                    button = document.createElement('button');
+                    button.textContent = 'enroll';
+                    button.classList.add('rowBtn');
+                    column3.appendChild(button);
+                    row.appendChild(column3);
+                }
+
+                table.appendChild(row);
+            }
+
+            tablecontainer.appendChild(table);
+
+            table.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (event.target.classList.contains('rowBtn')) {
+                    button1 = event.target;
+                    rowIndex = button1.closest('tr').rowIndex;
+
+
+                    if (button1.textContent == 'drop') {
+
+                        deleterecord();
+
+
+                    }
+
+                    else if (button1.textContent == 'enroll') {
+                        enrollrecord();
+                    }
+                }
+            });
+        }
+
+
+
+
+        var BaseUrlPost4 = "http://localhost:1337/infobutton/";
+        async function deleterecord() {
+            const res = await fetch(BaseUrlPost4, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+                    courseid: dataArray[rowIndex][0]
+                })
+            });
+            data3 = await res.json();
+            if (data3.info == 'Deleted') {
+                button1.textContent = 'enroll';
+            }
+        }
+
+        var BaseUrlPost5 = "http://localhost:1337/infobuttonadd/";
+        async function enrollrecord() {
+            const res = await fetch(BaseUrlPost5, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+                    courseid: dataArray[rowIndex][0]
+                })
+            });
+            data4 = await res.json();
+            if (data4.info == 'Enrolled') {
+                button1.textContent = 'drop';
+            }
+        }
+
+        const searchIcon = document.getElementById('searchIcon');
+        const searchBars = document.getElementById('searchBar');
+
+
+        var text;
+        searchBars.addEventListener('input', function (e) {
+            e.preventDefault();
+            text = searchBars.value;
+
+            searchIcon.addEventListener('click', search);
+
+
+        });
+        var BaseUrlPost6 = "http://localhost:1337/infosearch/";
+        async function search(e) {
+            e.preventDefault();
+            document.getElementById('para').innerHTML = '';
+            var dataArray5 = [];
+            const res = await fetch(BaseUrlPost6, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({
+                    coursenames: text
+                })
+            });
+            data5 = await res.json();
+            data5.forEach(function (obj) {
+                var valuesArray = Object.values(obj);
+                dataArray5.push(valuesArray);
+            });
+            for (var i = 0; i < dataArray5.length; i++) {
+                for (var j = 0; j < dataArray5[i].length; j++) {
+                    var par = document.createElement('p');
+                    par.innerHTML = dataArray5[i][j];
+                    document.getElementById('para').appendChild(par);
+                }
+            }
+        }
+
+
+        var image = document.getElementById('profileImg');
+
+        var BaseUrlPost10 = "http://localhost:1337/profiledisp/";
+
+        async function postprofile() {
+
+            try {
+
+                const res = await fetch(BaseUrlPost10, {
+
+                    method: 'POST',
+
+                    headers: {
+
+                        "Content-Type": 'application/json'
+
+                    },
+
+                    body: JSON.stringify({})
+
+                });
+
+                if (!res.ok) {
+
+                    throw new Error('Network response was not ok.');
+
+                }
+
+                data = await res.json();
+
+                var path = "../assets/" + data[0].picture;
+
+                image.src = path;
+
+            } catch (error) {
+
+                console.error('Error fetching image:', error);
+
+            }
+
+            var butt = document.getElementById('imgButton');
+
+            butt.addEventListener('click', function () {
+
+                window.location.href = "profiledisplay.html";
+
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
